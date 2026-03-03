@@ -7,7 +7,7 @@ the MIT license.
 -->
 # pam\_okta\_auth
 
-[![build status](https://github.com/flowerysong/pam_okta_auth/actions/workflows/build.yml/badge.svg)](https://github.com/flowerysong/pam_okta_auth/actions/workflows/build.yml) [![dependencies status](https://github.com/flowerysong/pam_okta_auth/actions/workflows/dependencies.yml/badge.svg)](https://github.com/flowerysong/pam_okta_auth/actions/workflows/dependencies.yml)
+[![build status](https://github.com/umich-iam/okta-pam-auth/actions/workflows/build.yml/badge.svg)](https://github.com/umich-iam/okta-pam-auth/actions/workflows/build.yml) [![dependencies status](https://github.com/umich-iam/okta-pam-auth/actions/workflows/dependencies.yml/badge.svg)](https://github.com/umich-iam/okta-pam-auth/actions/workflows/dependencies.yml)
 
 Okta authentication for Unix systems.
 
@@ -38,7 +38,7 @@ You can install these dependencies on most RPM-based systems by running
 ## Installation
 
 Prebuilt RPM and deb packages are published via [GitHub
-Releases](https://github.com/flowerysong/pam_okta_auth/releases/latest).
+Releases](https://github.com/umich-iam/okta-pam-auth/releases/latest).
 
 Example installation process for RHEL:
 ```
