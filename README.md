@@ -2,18 +2,18 @@
 SPDX-License-Identifier: MIT
 SPDX-FileCopyrightText: © 2025 Regents of The University of Michigan
 
-This file is part of pam_okta_auth and is distributed under the terms of
+This file is part of pam_okta and is distributed under the terms of
 the MIT license.
 -->
-# pam\_okta\_auth
+# pam\_okta
 
-[![build status](https://github.com/umich-iam/pam_okta_auth/actions/workflows/build.yml/badge.svg)](https://github.com/umich-iam/pam_okta_auth/actions/workflows/build.yml) [![dependencies status](https://github.com/umich-iam/pam_okta_auth/actions/workflows/dependencies.yml/badge.svg)](https://github.com/umich-iam/pam_okta_auth/actions/workflows/dependencies.yml)
+[![build status](https://github.com/umich-iam/pam_okta/actions/workflows/build.yml/badge.svg)](https://github.com/umich-iam/pam_okta/actions/workflows/build.yml) [![dependencies status](https://github.com/umich-iam/pam_okta/actions/workflows/dependencies.yml/badge.svg)](https://github.com/umich-iam/pam_okta/actions/workflows/dependencies.yml)
 
 Okta authentication for Unix systems.
 
-![animated demo](doc/pam_okta_auth.gif)
+![animated demo](doc/pam_okta.gif)
 
-`pam_okta_auth` is a Pluggable Authentication Modules (PAM)
+`pam_okta` is a Pluggable Authentication Modules (PAM)
 module designed to provide secondary authentication similar to
 [`duo_unix`](https://github.com/duosecurity/duo_unix) using Okta.
 It also has experimental support for password-based primary
@@ -21,11 +21,11 @@ authentication.
 
 ## Dependencies
 
-`pam_okta_auth` is developed and used mainly on Linux systems using
+`pam_okta` is developed and used mainly on Linux systems using
 [Linux-PAM](https://github.com/linux-pam/linux-pam), but should be
 compatible with other Unix-like systems and PAM implementations.
 
-In order to build `pam_okta_auth` you will need the following:
+In order to build `pam_okta` you will need the following:
 
 * A [Rust](https://www.rust-lang.org/) compiler with support for the 2021 edition of Rust.
 * [Cargo](https://doc.rust-lang.org/cargo/)
@@ -42,13 +42,13 @@ Releases](https://github.com/umich-iam/okta-pam-auth/releases/latest).
 
 Example installation process for RHEL:
 ```
-dnf install https://github.com/flowerysong/pam_okta_auth/releases/download/v0.1.3/pam_okta_auth-0.1.3-1.el9.x86_64.rpm https://github.com/flowerysong/pam_okta_auth/releases/download/v0.1.3/pam_okta_auth-selinux-0.1.3-1.el9.noarch.rpm
+dnf install https://github.com/flowerysong/pam_okta/releases/download/v0.1.3/pam_okta-0.1.3-1.el9.x86_64.rpm https://github.com/flowerysong/pam_okta/releases/download/v0.1.3/pam_okta-selinux-0.1.3-1.el9.noarch.rpm
 ```
 
 Example installation process for Ubuntu:
 ```
-wget https://github.com/flowerysong/pam_okta_auth/releases/download/v0.1.3/pam_okta_auth_0.1.3_amd64.deb
-dpkg -i pam_okta_auth_0.1.3_amd64.deb
+wget https://github.com/flowerysong/pam_okta/releases/download/v0.1.3/pam_okta_0.1.3_amd64.deb
+dpkg -i pam_okta_0.1.3_amd64.deb
 ```
 
 ### Manual Installation
@@ -56,7 +56,7 @@ dpkg -i pam_okta_auth_0.1.3_amd64.deb
 In a git checkout (or a source tree obtained by other methods):
 ```
 cargo build --locked --profile release
-sudo install -m 0755 target/release/libpam_okta_auth.so /usr/lib/security/pam_okta_auth.so
+sudo install -m 0755 target/release/libpam_okta.so /usr/lib/security/pam_okta.so
 ```
 
 `/usr/lib/security` is probably not the correct installation path for
@@ -66,11 +66,11 @@ and adjust your process accordingly.
 ## Deployment
 
 The configuration file, by default located at
-`/etc/security/pam_okta_auth.toml`, uses the [TOML](https://toml.io/)
+`/etc/security/pam_okta.toml`, uses the [TOML](https://toml.io/)
 format. This file contains secrets so it must not be world readable.
 
 Supported configuration file options and PAM options are documented
-in the [man page](doc/pam_okta_auth.8.md).
+in the [man page](doc/pam_okta.8.md).
 
 Okta client credentials are required. These should be for a native
 application with at least the `OTP` and `OOB` direct auth grants.
@@ -93,29 +93,29 @@ client_secret = "6zFfFfffzfZFz6zFZFzzFZFZFfZf6Fz6F6ZfZ6f-FFFzZZ6FZ_zZFzFZ6fFzfFF
 ### Example PAM Configurations
 
 ```
-auth    required    pam_okta_auth.so
+auth    required    pam_okta.so
 ```
 
 `pam_duo` has a flag to "fail safe" and return `success` when there
 is a configuration issue or the Duo service is unavailable. There is
-no corresponding `pam_okta_auth` configuration—you can instead use
+no corresponding `pam_okta` configuration—you can instead use
 `Linux-PAM` controls to ignore the `service_err` and/or `authinfo_unavail`
 returns from the module:
 
 ```
-auth    [success=ok ignore=ignore authinfo_unavail=ignore service_err=ignore default=bad]   pam_okta_auth.so
+auth    [success=ok ignore=ignore authinfo_unavail=ignore service_err=ignore default=bad]   pam_okta.so
 ```
 
 `pam_duo` allows you to use a custom pattern language in its
 configuration file to specify which groups should be required to
 use Duo authentication. There is no equivalent functionality in
-`pam_okta_auth`, but you can achieve similar configurations using
+`pam_okta`, but you can achieve similar configurations using
 features available in the `Linux-PAM` stack.
 
 ```
 # Only require Okta authentication for staff who aren't in the bypass group
 auth    [default=1 ignore=ignore success=ignore]    pam_succeed_if.so quiet user ingroup staff user notingroup bypass
-auth    required                                    pam_okta_auth.so
+auth    required                                    pam_okta.so
 ```
 
 ## Deployment As Primary Authentication
@@ -161,7 +161,7 @@ reported in [2018](https://bugzilla.mindrot.org/show_bug.cgi?id=2876),
 but none of them have been accepted yet.
 
 Consequently if we have a message—like a number challenge—that
-absolutely must be displayed to the user, `pam_okta_auth` detects that
+absolutely must be displayed to the user, `pam_okta` detects that
 this authentication is being done for `sshd` and sends the message as
 a prompt that the user must then acknowledge by hitting `enter`.
 
