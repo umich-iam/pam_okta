@@ -1,14 +1,14 @@
-name: "pam_okta_auth"
+name: "pam_okta"
 arch: "amd64"
 platform: "linux"
 version: "0.4.2-alpha.1"
 section: "default"
 maintainer: "Ezekiel Hendrickson <ezekielh@devnull.mail.umich.edu>"
 description: PAM module for Okta
-homepage: "https://github.com/flowerysong/pam_okta_auth"
+homepage: "https://github.com/umich-iam/pam_okta"
 license: "MIT"
 contents:
-  - src: ./target/release/libpam_okta_auth.so
-    dst: /usr/lib/x86_64-linux-gnu/security/pam_okta_auth.so
-  - src: ./doc/pam_okta_auth.8
-    dst: /usr/share/man/man8/pam_okta_auth.8
+  - src: ./target/release/libpam_okta.so
+    dst: /usr/lib/x86_64-linux-gnu/security/pam_okta.so
+  - src: ./doc/pam_okta.8
+    dst: /usr/share/man/man8/pam_okta.8

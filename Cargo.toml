@@ -1,10 +1,10 @@
 [package]
-name = "pam_okta_auth"
+name = "pam_okta"
 version = "0.4.2-alpha.1"
 edition = "2021"
 license = "MIT"
 description = "PAM module for Okta"
-repository = "https://github.com/flowerysong/pam_okta_auth"
+repository = "https://github.com/umich-iam/pam_okta"
 publish = false
 
 [dependencies]
@@ -15,8 +15,8 @@ toml = { version = "0.9", features = ["parse", "serde"], default-features = fals
 ureq = { version = "3.0", features = ["json", "rustls"], default-features = false }
 
 [lib]
-name = "pam_okta_auth"
-path = "src/pam_okta_auth.rs"
+name = "pam_okta"
+path = "src/pam_okta.rs"
 crate-type = ["cdylib", "lib"]
 
 [profile.rpm]
@@ -35,10 +35,10 @@ push = false
 allow-branch = ["*"]
 pre-release-commit-message = "chore: bump version to {{version}}"
 pre-release-replacements = [
-    { file = "Makefile", search = "target/package/pam_okta_auth-[a-z0-9\\.-]+.crate", replace = "target/package/pam_okta_auth-{{version}}.crate", prerelease = true } ,
+    { file = "Makefile", search = "target/package/pam_okta-[a-z0-9\\.-]+.crate", replace = "target/package/pam_okta-{{version}}.crate", prerelease = true } ,
     { file = "packaging/deb/nfpm.yaml", search = "version: \"[a-z0-9\\.-]+\"", replace = "version: \"{{version}}\"", prerelease = true } ,
-    { file = "packaging/rpm/pam_okta_auth.spec", search = "%global rawversion [a-z0-9\\.-]+", replace = "%global rawversion {{version}}", prerelease = true } ,
-    { file = "doc/pam_okta_auth.8", search = ".Dd [-0-9]+", replace = ".Dd {{date}}", prerelease = true } ,
-    { file = "doc/pam_okta_auth.8", search = ".Os pam_okta_auth [a-z0-9\\.-]+", replace = ".Os pam_okta_auth {{version}}", prerelease = true } ,
+    { file = "packaging/rpm/pam_okta.spec", search = "%global rawversion [a-z0-9\\.-]+", replace = "%global rawversion {{version}}", prerelease = true } ,
+    { file = "doc/pam_okta.8", search = ".Dd [-0-9]+", replace = ".Dd {{date}}", prerelease = true } ,
+    { file = "doc/pam_okta.8", search = ".Os pam_okta [a-z0-9\\.-]+", replace = ".Os pam_okta {{version}}", prerelease = true } ,
 ]
 pre-release-hook = ["make", "doc"]

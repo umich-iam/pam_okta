@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: © 2025 Regents of The University of Michigan
 //
-// This file is part of pam_okta_auth and is distributed under the terms of
+// This file is part of pam_okta and is distributed under the terms of
 // the MIT license.
 
 use std::os::unix::fs::PermissionsExt;
@@ -40,7 +40,7 @@ struct OktaHandle<'a> {
 
 fn ureq_config_base() -> ureq::config::ConfigBuilder<ureq::typestate::AgentScope> {
     ureq::Agent::config_builder()
-        .user_agent(format!("pam_okta_auth/{}", env!("CARGO_PKG_VERSION")))
+        .user_agent(format!("pam_okta/{}", env!("CARGO_PKG_VERSION")))
         .http_status_as_error(false)
 }
 
@@ -344,7 +344,7 @@ impl PamServiceModule for PamOkta {
 
         oh.log_info(&format!("Authentication attempt for {username}"));
 
-        let mut conf_path = String::from("/etc/security/pam_okta_auth.toml");
+        let mut conf_path = String::from("/etc/security/pam_okta.toml");
         let mut autopush = false;
         let mut password_auth = false;
         let mut try_first_pass = false;
@@ -371,12 +371,12 @@ impl PamServiceModule for PamOkta {
         let conf_path = std::path::Path::new(&conf_path);
         match conf_path.metadata() {
             Ok(stat) if stat.permissions().mode() & 0o007 != 0o000 => {
-                oh.send_error("pam_okta_auth configuration is unusable: unacceptable permissions");
+                oh.send_error("pam_okta configuration is unusable: unacceptable permissions");
                 return PamError::SERVICE_ERR;
             }
             Ok(_) => {}
             Err(e) => {
-                oh.send_error(&format!("pam_okta_auth configuration is unusable: {e}"));
+                oh.send_error(&format!("pam_okta configuration is unusable: {e}"));
                 return PamError::SERVICE_ERR;
             }
         }
@@ -384,7 +384,7 @@ impl PamServiceModule for PamOkta {
         let conf_file = match std::fs::read_to_string(conf_path) {
             Ok(f) => f,
             Err(e) => {
-                oh.send_error(&format!("pam_okta_auth configuration is unusable: {e}"));
+                oh.send_error(&format!("pam_okta configuration is unusable: {e}"));
                 return PamError::SERVICE_ERR;
             }
         };
