@@ -376,6 +376,12 @@ impl PamServiceModule for PamOkta {
         // Note that the contents of file are read only _after_ permissions are verified.
         let mut conf_file = match File::open(conf_path) {
             Ok(file) => match file.metadata() {
+                Ok(stat) if stat.uid() != 0 {
+                    oh.send_error(
+                        "pam_okta configuration is unusable: must be owned by root",
+                    );
+                    return PamError::SERVICE_ERR;
+                }
                 Ok(stat) if stat.permissions().mode() & 0o077 != 0o000 => {
                     oh.send_error(
                         "pam_okta configuration is unusable: unacceptable permissions",
