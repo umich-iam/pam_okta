@@ -4,6 +4,8 @@
 // This file is part of pam_okta and is distributed under the terms of
 // the MIT license.
 
+use std::fs::File;
+use std::io::Read;
 use std::os::unix::fs::PermissionsExt;
 
 #[rustfmt::skip]
@@ -368,28 +370,38 @@ impl PamServiceModule for PamOkta {
             }
         }
 
-        let conf_path = std::path::Path::new(&conf_path);
-        match conf_path.metadata() {
-            Ok(stat) if stat.permissions().mode() & 0o007 != 0o000 => {
-                oh.send_error("pam_okta configuration is unusable: unacceptable permissions");
-                return PamError::SERVICE_ERR;
-            }
-            Ok(_) => {}
-            Err(e) => {
-                oh.send_error(&format!("pam_okta configuration is unusable: {e}"));
-                return PamError::SERVICE_ERR;
-            }
-        }
-
-        let conf_file = match std::fs::read_to_string(conf_path) {
-            Ok(f) => f,
+        // Avoid potential TOCTOU race condition by checking permissions on already opened file.
+        // Note that the contents of file are read only _after_ permissions are verified.
+        let mut conf_file = match File::open(conf_path) {
+            Ok(file) => match file.metadata() {
+                Ok(stat) if stat.permissions().mode() & 0o007 != 0o000 => {
+                    oh.send_error(
+                        "pam_okta configuration is unusable: unacceptable permissions",
+                    );
+                    return PamError::SERVICE_ERR;
+                }
+                Ok(_) => file,
+                Err(e) => {
+                    oh.send_error(&format!("pam_okta configuration is unusable: {e}"));
+                    return PamError::SERVICE_ERR;
+                }
+            },
             Err(e) => {
                 oh.send_error(&format!("pam_okta configuration is unusable: {e}"));
                 return PamError::SERVICE_ERR;
             }
         };
 
-        if let Ok(conf) = toml::from_str(&conf_file) {
+        let mut conf_data = String::new();
+        match conf_file.read_to_string(&mut conf_data) {
+            Ok(_) => (),
+            Err(e) => {
+                oh.send_error(&format!("pam_okta configuration is unusable: {e}"));
+                return PamError::SERVICE_ERR;
+            }
+        }
+
+        if let Ok(conf) = toml::from_str(&conf_data) {
             oh.conf = conf;
         } else {
             oh.log_error("unexpected error parsing config file");
