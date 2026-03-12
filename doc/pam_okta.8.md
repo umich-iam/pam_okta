@@ -2,11 +2,11 @@ PAM\_OKTA\_AUTH(8) - System Manager's Manual
 
 # NAME
 
-**pam\_okta\_auth** - PAM module for Okta
+**pam\_okta** - PAM module for Okta
 
 # SYNOPSIS
 
-**pam\_okta\_auth.so**
+**pam\_okta.so**
 \[**config\_file=**&zwnj;*FILENAME*]
 \[**autopush**]
 \[**password\_auth**]
@@ -15,7 +15,7 @@ PAM\_OKTA\_AUTH(8) - System Manager's Manual
 
 # DESCRIPTION
 
-**pam\_okta\_auth**
+**pam\_okta**
 authenticates users against the Okta authentication service.
 
 # OPTIONS
@@ -23,7 +23,7 @@ authenticates users against the Okta authentication service.
 **config\_file=**&zwnj;*FILENAME*
 
 > Specify a config file to load instead of
-> */etc/security/pam\_okta\_auth.toml*
+> */etc/security/pam\_okta.toml*
 
 **autopush**
 
@@ -74,4 +74,4 @@ PAM(8)
 
 pam.conf(5)
 
-pam\_okta\_auth 0.4.2-alpha.1 - 2025-08-22
+pam\_okta 0.4.2-alpha.1 - 2025-08-22

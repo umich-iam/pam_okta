@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: © 2025 Regents of The University of Michigan
 #
-# This file is part of pam_okta_auth and is distributed under the terms of
+# This file is part of pam_okta and is distributed under the terms of
 # the MIT license.
 
 name: dependencies

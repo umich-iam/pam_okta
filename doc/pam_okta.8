@@ -1,16 +1,16 @@
 .\" SPDX-License-Identifier: MIT
 .\" SPDX-FileCopyrightText: © 2025 Regents of The University of Michigan
 .\"
-.\" This file is part of pam_okta_auth and is distributed under the terms of
+.\" This file is part of pam_okta and is distributed under the terms of
 .\" the MIT license.
 .Dd 2025-08-22
 .Dt PAM_OKTA_AUTH 8
-.Os pam_okta_auth 0.4.2-alpha.1
+.Os pam_okta 0.4.2-alpha.1
 .Sh NAME
-.Nm pam_okta_auth
+.Nm pam_okta
 .Nd PAM module for Okta
 .Sh SYNOPSIS
-.Nm pam_okta_auth.so
+.Nm pam_okta.so
 .Op Cm config_file= Ns Ar FILENAME
 .Op Cm autopush
 .Op Cm password_auth
@@ -23,7 +23,7 @@ authenticates users against the Okta authentication service.
 .Bl -tag -width Ds
 .It Cm config_file= Ns Ar FILENAME
 Specify a config file to load instead of
-.Pa /etc/security/pam_okta_auth.toml
+.Pa /etc/security/pam_okta.toml
 .It Cm autopush
 Automatically initiate push verification instead of prompting for a passcode.
 .It Cm password_auth

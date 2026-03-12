@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: © 2025 Regents of The University of Michigan
 #
-# This file is part of pam_okta_auth and is distributed under the terms of
+# This file is part of pam_okta and is distributed under the terms of
 # the MIT license.
 
-module pam_okta_auth 1.0.0;
+module pam_okta 1.0.0;
 
-bool mfa_pam_okta_auth_login true;
-bool mfa_pam_okta_auth_sshd true;
+bool mfa_pam_okta_login true;
+bool mfa_pam_okta_sshd true;
 
 require {
     class tcp_socket name_connect;
@@ -17,10 +17,10 @@ require {
     type sshd_t;
 };
 
-if (mfa_pam_okta_auth_login) {
+if (mfa_pam_okta_login) {
     allow local_login_t {http_cache_port_t http_port_t}:tcp_socket name_connect;
 }
 
-if (mfa_pam_okta_auth_sshd) {
+if (mfa_pam_okta_sshd) {
     allow sshd_t {http_cache_port_t http_port_t}:tcp_socket name_connect;
 }

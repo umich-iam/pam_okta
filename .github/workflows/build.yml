@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: © 2025 Regents of The University of Michigan
 #
-# This file is part of pam_okta_auth and is distributed under the terms of
+# This file is part of pam_okta and is distributed under the terms of
 # the MIT license.
 
 name: build
@@ -67,7 +67,7 @@ jobs:
       - name: Upload package
         uses: actions/upload-artifact@v4
         with:
-          path: target/package/pam_okta_auth-*.crate
+          path: target/package/pam_okta-*.crate
           name: crate
 
   build-el:
@@ -88,7 +88,7 @@ jobs:
           name: crate
 
       - name: Build RPM
-        run: rpmbuild -ta pam_okta_auth-*.crate
+        run: rpmbuild -ta pam_okta-*.crate
 
       - name: Upload RPM
         uses: actions/upload-artifact@v4
@@ -116,7 +116,7 @@ jobs:
 
       - name: Build .deb
         run: |
-          tar --strip-components=1 -xvaf pam_okta_auth-*.crate
+          tar --strip-components=1 -xvaf pam_okta-*.crate
           make deb
 
       - name: Upload .deb
@@ -144,6 +144,6 @@ jobs:
         with:
           draft: true
           files: |
-            pam_okta_auth*
+            pam_okta*
             RPMS/*/*
             SRPMS/*
