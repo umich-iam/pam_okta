@@ -7,6 +7,7 @@
 use std::fs::File;
 use std::io::Read;
 use std::os::unix::fs::PermissionsExt;
+use zeroize::{ZeroizeOnDrop, Zeroizing};
 
 #[rustfmt::skip]
 use pamsm::{
@@ -22,7 +23,7 @@ use pamsm::{
 
 struct PamOkta;
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, ZeroizeOnDrop)]
 struct OktaConfig {
     host: String,
     client_id: String,
@@ -37,7 +38,7 @@ struct OktaHandle<'a> {
     pamh: &'a Pam,
     conf: OktaConfig,
     agent: ureq::Agent,
-    mfa_token: Option<String>,
+    mfa_token: Option<Zeroizing<String>>,
 }
 
 fn ureq_config_base() -> ureq::config::ConfigBuilder<ureq::typestate::AgentScope> {
@@ -125,7 +126,7 @@ impl OktaHandle<'_> {
         match resp.body_mut().read_json::<serde_json::Value>() {
             Ok(res) => {
                 /* NOTE: response will contian secrets used in end-user
-                   authentication and **should not** be logged */
+                authentication and **should not** be logged */
                 Ok((resp.status().is_success(), Some(res)))
             }
             Err(e) => {
@@ -239,9 +240,9 @@ impl OktaHandle<'_> {
 
         let err = resp_json["error"].as_str().unwrap_or_default();
         if err == "mfa_required" {
-            self.mfa_token = Some(String::from(
+            self.mfa_token = Some(Zeroizing::new(String::from(
                 resp_json["mfa_token"].as_str().unwrap_or_default(),
-            ));
+            )));
             self.send_info(resp_json["error_description"].as_str().unwrap_or_default());
             return None;
         }
@@ -393,7 +394,7 @@ impl PamServiceModule for PamOkta {
             }
         };
 
-        let mut conf_data = String::new();
+        let mut conf_data = Zeroizing::new(String::new());
         match conf_file.read_to_string(&mut conf_data) {
             Ok(_) => (),
             Err(e) => {
