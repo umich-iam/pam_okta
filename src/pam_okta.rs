@@ -6,7 +6,7 @@
 
 use std::fs::File;
 use std::io::Read;
-use std::os::unix::fs::PermissionsExt;
+use std::os::unix::fs::{PermissionsExt, MetadataExt};
 use zeroize::{ZeroizeOnDrop, Zeroizing};
 
 #[rustfmt::skip]
@@ -376,7 +376,7 @@ impl PamServiceModule for PamOkta {
         // Note that the contents of file are read only _after_ permissions are verified.
         let mut conf_file = match File::open(conf_path) {
             Ok(file) => match file.metadata() {
-                Ok(stat) if stat.uid() != 0 {
+                Ok(stat) if stat.uid() != 0 => {
                     oh.send_error(
                         "pam_okta configuration is unusable: must be owned by root",
                     );
