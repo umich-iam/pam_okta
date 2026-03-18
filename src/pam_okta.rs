@@ -125,8 +125,10 @@ impl OktaHandle<'_> {
 
         match resp.body_mut().read_json::<serde_json::Value>() {
             Ok(res) => {
-                /* NOTE: response will contian secrets used in end-user
-                authentication and **should not** be logged */
+                // The response can contain secrets, only log it in non-release builds.
+                if cfg!(debug_assertions) {
+                    self.log_debug(&res.to_string());
+                }
                 Ok((resp.status().is_success(), Some(res)))
             }
             Err(e) => {
