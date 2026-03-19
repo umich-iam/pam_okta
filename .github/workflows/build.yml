@@ -77,7 +77,7 @@ jobs:
       matrix:
         el_version: [8, 9, 10]
     runs-on: ubuntu-latest
-    container: almalinux:${{ matrix.el_version }}
+    container: redhat/ubi${{ matrix.el_version }}
     steps:
       - name: Install build deps
         run: dnf install -y git gzip make pam-devel rpmdevtools rust-toolset selinux-policy-devel
