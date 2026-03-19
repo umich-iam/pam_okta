@@ -4,7 +4,10 @@
 // This file is part of pam_okta and is distributed under the terms of
 // the MIT license.
 
-use std::os::unix::fs::PermissionsExt;
+use std::fs::File;
+use std::io::Read;
+use std::os::unix::fs::{MetadataExt, PermissionsExt};
+use zeroize::{ZeroizeOnDrop, Zeroizing};
 
 #[rustfmt::skip]
 use pamsm::{
@@ -20,7 +23,7 @@ use pamsm::{
 
 struct PamOkta;
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, ZeroizeOnDrop)]
 struct OktaConfig {
     host: String,
     client_id: String,
@@ -35,7 +38,7 @@ struct OktaHandle<'a> {
     pamh: &'a Pam,
     conf: OktaConfig,
     agent: ureq::Agent,
-    mfa_token: Option<String>,
+    mfa_token: Option<Zeroizing<String>>,
 }
 
 fn ureq_config_base() -> ureq::config::ConfigBuilder<ureq::typestate::AgentScope> {
@@ -122,7 +125,10 @@ impl OktaHandle<'_> {
 
         match resp.body_mut().read_json::<serde_json::Value>() {
             Ok(res) => {
-                self.log_debug(&res.to_string());
+                // The response can contain secrets, only log it in non-release builds.
+                if cfg!(debug_assertions) {
+                    self.log_debug(&res.to_string());
+                }
                 Ok((resp.status().is_success(), Some(res)))
             }
             Err(e) => {
@@ -236,9 +242,9 @@ impl OktaHandle<'_> {
 
         let err = resp_json["error"].as_str().unwrap_or_default();
         if err == "mfa_required" {
-            self.mfa_token = Some(String::from(
+            self.mfa_token = Some(Zeroizing::new(String::from(
                 resp_json["mfa_token"].as_str().unwrap_or_default(),
-            ));
+            )));
             self.send_info(resp_json["error_description"].as_str().unwrap_or_default());
             return None;
         }
@@ -368,28 +374,40 @@ impl PamServiceModule for PamOkta {
             }
         }
 
-        let conf_path = std::path::Path::new(&conf_path);
-        match conf_path.metadata() {
-            Ok(stat) if stat.permissions().mode() & 0o007 != 0o000 => {
-                oh.send_error("pam_okta configuration is unusable: unacceptable permissions");
-                return PamError::SERVICE_ERR;
-            }
-            Ok(_) => {}
-            Err(e) => {
-                oh.send_error(&format!("pam_okta configuration is unusable: {e}"));
-                return PamError::SERVICE_ERR;
-            }
-        }
-
-        let conf_file = match std::fs::read_to_string(conf_path) {
-            Ok(f) => f,
+        // Avoid potential TOCTOU race condition by checking permissions on already opened file.
+        // Note that the contents of file are read only _after_ permissions are verified.
+        let mut conf_file = match File::open(conf_path) {
+            Ok(file) => match file.metadata() {
+                Ok(stat) if stat.uid() != 0 => {
+                    oh.send_error("pam_okta configuration is unusable: must be owned by root");
+                    return PamError::SERVICE_ERR;
+                }
+                Ok(stat) if stat.permissions().mode() & 0o077 != 0o000 => {
+                    oh.send_error("pam_okta configuration is unusable: unacceptable permissions");
+                    return PamError::SERVICE_ERR;
+                }
+                Ok(_) => file,
+                Err(e) => {
+                    oh.send_error(&format!("pam_okta configuration is unusable: {e}"));
+                    return PamError::SERVICE_ERR;
+                }
+            },
             Err(e) => {
                 oh.send_error(&format!("pam_okta configuration is unusable: {e}"));
                 return PamError::SERVICE_ERR;
             }
         };
 
-        if let Ok(conf) = toml::from_str(&conf_file) {
+        let mut conf_data = Zeroizing::new(String::new());
+        match conf_file.read_to_string(&mut conf_data) {
+            Ok(_) => (),
+            Err(e) => {
+                oh.send_error(&format!("pam_okta configuration is unusable: {e}"));
+                return PamError::SERVICE_ERR;
+            }
+        }
+
+        if let Ok(conf) = toml::from_str(&conf_data) {
             oh.conf = conf;
         } else {
             oh.log_error("unexpected error parsing config file");

@@ -46,7 +46,11 @@ authenticates users against the Okta authentication service.
 > for one.
 > Primary authentication will fail if none is available.
 
-# CONFIGURATION OPTIONS
+# CONFIGURATION
+
+The configuration file needs to be owned by root (uid: 0) with group and other permissions unset (i.e. u=rw,g=,o=).
+
+## OPTIONS
 
 **host**
 

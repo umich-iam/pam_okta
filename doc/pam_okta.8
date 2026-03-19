@@ -38,7 +38,10 @@ Use the password supplied to a prior module in the stack instead of prompting
 for one.
 Primary authentication will fail if none is available.
 .El
-.Sh CONFIGURATION OPTIONS
+.Sh CONFIGURATION
+.Pp
+The configuration file needs to be owned by root (uid: 0) with group and other permissions unset (i.e. u=rw,g=,o=).
+.Ss OPTIONS
 .Bl -tag -width Ds
 .It Cm host
 Okta tenant hostname (required)
