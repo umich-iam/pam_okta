@@ -52,7 +52,7 @@ target/pam/pam_okta.pp: target/pam/pam_okta.mod
 selinux: target/pam/pam_okta.pp
 
 rpm: package
-	rpmbuild -ta target/package/pam_okta-0.4.2-alpha.1.crate
+	rpmbuild -ta target/package/pam_okta-0.5.0-alpha.1.crate
 
 deb: build
 	mkdir -p deb
