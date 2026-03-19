@@ -23,7 +23,7 @@ LICENSES.dependencies: Cargo.lock
 	env RUSTC_BOOTSTRAP=1 cargo tree -Z avoid-dev-deps --edges no-build,no-dev,no-proc-macro --no-dedupe --prefix none --format "{l}: {p}" | sed -e "s: ($(pwd)[^)]*)::g" -e "s: / :/:g" -e "s:/: OR :g" | sort -u > LICENSES.dependencies
 
 doc/pam_okta.8.md: doc/pam_okta.8
-	mandoc doc/pam_okta.8 -T markdown > doc/pam_okta.8.md
+	mandoc -T markdown doc/pam_okta.8 > doc/pam_okta.8.md
 
 doc: doc/pam_okta.8.md
 
