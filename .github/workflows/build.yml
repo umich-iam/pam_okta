@@ -12,6 +12,9 @@ on:
 permissions:
   contents: read
 
+env:
+  BUILDER_ACCESS_TOKEN: "${{ secrets.BUILDER_ACCESS_TOKEN }}"
+
 jobs:
   rustfmt:
     runs-on: ubuntu-latest
