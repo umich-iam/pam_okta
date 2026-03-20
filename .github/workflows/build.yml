@@ -77,7 +77,7 @@ jobs:
       matrix:
         el_version: [9]
     runs-on: ubuntu-latest
-    container: ghcr.io/umich-iam/pam_okta-build:ubi${{ matrix.el_version }}
+    container: ghcr.io/umich-iam/pam_okta-build:ubi9
     steps:
       - name: Download package
         uses: actions/download-artifact@v4
