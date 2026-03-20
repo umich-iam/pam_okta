@@ -70,6 +70,32 @@ jobs:
           path: target/package/pam_okta-*.crate
           name: crate
 
+  build-el-test:
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        el_version: [9]
+    runs-on: ubuntu-latest
+    container: ghcr.io/umich-iam/pam_okta-build:ubi${{ matrix.el_version }}
+    steps:
+      - name: Download package
+        uses: actions/download-artifact@v4
+        with:
+          name: crate
+
+      - name: Build RPM
+        run: rpmbuild -ta pam_okta-*.crate
+
+      - name: Upload RPM
+        uses: actions/upload-artifact@v4
+        with:
+          name: el${{ matrix.el_version }}
+          path: |
+            ~/rpmbuild/RPMS/noarch/*
+            ~/rpmbuild/RPMS/x86_64/*
+            ~/rpmbuild/SRPMS/*
+
   build-el:
     needs: build
     strategy:
