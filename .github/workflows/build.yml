@@ -11,9 +11,7 @@ on:
 
 permissions:
   contents: read
-
-env:
-  BUILDER_ACCESS_TOKEN: "${{ secrets.BUILDER_ACCESS_TOKEN }}"
+  packages: read
 
 jobs:
   rustfmt:
@@ -99,35 +97,6 @@ jobs:
             ~/rpmbuild/RPMS/x86_64/*
             ~/rpmbuild/SRPMS/*
 
-  build-el:
-    needs: build
-    strategy:
-      fail-fast: false
-      matrix:
-        el_version: [8, 9, 10]
-    runs-on: ubuntu-latest
-    container: redhat/ubi${{ matrix.el_version }}
-    steps:
-      - name: Install build deps
-        run: dnf install -y git gzip make pam-devel rpmdevtools rust-toolset selinux-policy-devel
-
-      - name: Download package
-        uses: actions/download-artifact@v4
-        with:
-          name: crate
-
-      - name: Build RPM
-        run: rpmbuild -ta pam_okta-*.crate
-
-      - name: Upload RPM
-        uses: actions/upload-artifact@v4
-        with:
-          name: el${{ matrix.el_version }}
-          path: |
-            ~/rpmbuild/RPMS/noarch/*
-            ~/rpmbuild/RPMS/x86_64/*
-            ~/rpmbuild/SRPMS/*
-
   build-deb:
     needs: build
     runs-on: ubuntu-latest
@@ -157,7 +126,7 @@ jobs:
   release:
     if: github.ref_type == 'tag'
     needs:
-      - build-el
+      - build-el-test
       - build-deb
     permissions:
       contents: write
