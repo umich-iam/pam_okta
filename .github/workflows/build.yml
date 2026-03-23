@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: read
+  packages: read
 
 jobs:
   rustfmt:
@@ -75,7 +76,33 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        el_version: [8, 9, 10]
+        el_version: [8, 9]
+    runs-on: ubuntu-latest
+    container: ghcr.io/umich-iam/pam_okta-build:el${{ matrix.el_version }}
+    steps:
+      - name: Download package
+        uses: actions/download-artifact@v4
+        with:
+          name: crate
+
+      - name: Build RPM
+        run: rpmbuild -ta pam_okta-*.crate
+
+      - name: Upload RPM
+        uses: actions/upload-artifact@v4
+        with:
+          name: el${{ matrix.el_version }}
+          path: |
+            ~/rpmbuild/RPMS/noarch/*
+            ~/rpmbuild/RPMS/x86_64/*
+            ~/rpmbuild/SRPMS/*
+
+  build-alma-el:
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        el_version: [10]
     runs-on: ubuntu-latest
     container: almalinux:${{ matrix.el_version }}
     steps:
@@ -129,6 +156,7 @@ jobs:
     if: github.ref_type == 'tag'
     needs:
       - build-el
+      - build-alma-el
       - build-deb
     permissions:
       contents: write
