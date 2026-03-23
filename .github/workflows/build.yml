@@ -77,8 +77,8 @@ jobs:
       fail-fast: false
       matrix:
         image:
-          - ghcr.io/umich-iam/pam_okta-build:ubi8
-          - ghcr.io/umich-iam/pam_okta-build:ubi9
+          - ghcr.io/umich-iam/pam_okta-build:el8
+          - ghcr.io/umich-iam/pam_okta-build:el9
           - almalinux:10
     runs-on: ubuntu-latest
     container: ${{ matrix.image }}
