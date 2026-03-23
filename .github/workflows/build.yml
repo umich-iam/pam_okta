@@ -71,14 +71,17 @@ jobs:
           path: target/package/pam_okta-*.crate
           name: crate
 
-  build-el-test:
+  build-el:
     needs: build
     strategy:
       fail-fast: false
       matrix:
-        el_version: [9]
+        image:
+          - ghcr.io/umich-iam/pam_okta-build:ubi8
+          - ghcr.io/umich-iam/pam_okta-build:ubi9
+          - almalinux:10
     runs-on: ubuntu-latest
-    container: ghcr.io/umich-iam/pam_okta-build:ubi9
+    container: ${{ matrix.image }}
     steps:
       - name: Download package
         uses: actions/download-artifact@v4
