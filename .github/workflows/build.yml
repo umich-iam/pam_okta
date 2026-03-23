@@ -129,7 +129,7 @@ jobs:
   release:
     if: github.ref_type == 'tag'
     needs:
-      - build-el-test
+      - build-el
       - build-deb
     permissions:
       contents: write
