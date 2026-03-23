@@ -78,4 +78,4 @@ PAM(8)
 
 pam.conf(5)
 
-pam\_okta 0.5.0-alpha.1 - 2026-03-19
+pam\_okta 0.5.0-alpha.2 - 2026-03-23
