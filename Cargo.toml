@@ -1,6 +1,6 @@
 [package]
 name = "pam_okta"
-version = "0.5.0-alpha.3"
+version = "0.5.0"
 edition = "2021"
 license = "MIT"
 description = "PAM module for Okta"

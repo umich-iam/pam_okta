@@ -1,7 +1,7 @@
 name: "pam_okta"
 arch: "amd64"
 platform: "linux"
-version: "0.5.0-alpha.3"
+version: "0.5.0"
 section: "default"
 maintainer: "Ezekiel Hendrickson <ezekielh@devnull.mail.umich.edu>"
 description: PAM module for Okta

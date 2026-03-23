@@ -2,11 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased
+## [0.5.0](https://github.com/umich-iam/pam_okta/releases/tag/v0.5.0) - 2025-03-23
 
 ### Added
 
 ### Changed
+- BREAKING: update name from pam\_okta\_auth to pam\_okta to align with convention
+- Build process now uses RHEL UBI images where able
+- Tighter restrictions on configuration file permissions (see man pam\_okta(8))
 
 ### Fixed
 
