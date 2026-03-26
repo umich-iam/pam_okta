@@ -42,13 +42,13 @@ Releases](https://github.com/umich-iam/okta-pam-auth/releases/latest).
 
 Example installation process for RHEL:
 ```
-dnf install https://github.com/flowerysong/pam_okta/releases/download/v0.1.3/pam_okta-0.1.3-1.el9.x86_64.rpm https://github.com/flowerysong/pam_okta/releases/download/v0.1.3/pam_okta-selinux-0.1.3-1.el9.noarch.rpm
+dnf install https://github.com/umich-iam/pam_okta/releases/download/v0.5.0/pam_okta-0.5.0-1.el9.x86_64.rpm https://github.com/umich-iam/pam_okta/releases/download/v0.5.0/pam_okta-selinux-0.5.0-1.el9.noarch.rpm
 ```
 
 Example installation process for Ubuntu:
 ```
-wget https://github.com/flowerysong/pam_okta/releases/download/v0.1.3/pam_okta_0.1.3_amd64.deb
-dpkg -i pam_okta_0.1.3_amd64.deb
+wget https://github.com/umich-iam/pam_okta/releases/download/v0.5.0/pam_okta_0.5.0_amd64.deb
+dpkg -i pam_okta_0.5.0_amd64.deb
 ```
 
 ### Manual Installation
