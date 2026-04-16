@@ -35,9 +35,8 @@ PAM module for Okta.
 %package selinux
 Summary: SELinux rules for %{name}
 BuildArch: noarch
-Requires: selinux-policy-%{selinuxtype}
-Requires(post): selinux-policy-%{selinuxtype}
-Requires: pam_okta%{?_isa} = %{version}-%{release}
+BuildRequires: selinux-policy
+BuildRequires: selinux-policy-devel
 %{?selinux_requires}
 
 %description selinux
