@@ -53,7 +53,8 @@ make TARGET_PROFILE=rpm
     TARGET_PROFILE=rpm \
     prefix=%{_prefix} \
     libdir=%{_libdir} \
-    datarootdir=%{_datarootdir}
+    datarootdir=%{_datarootdir} \
+    sysconfdir=%{_sysconfdir}
 
 %files
 %license LICENSE LICENSES.dependencies
@@ -61,6 +62,7 @@ make TARGET_PROFILE=rpm
 %{_mandir}/man8/pam_okta.8*
 %defattr(-,root,root)
 %{_libdir}/security/pam_okta.so
+%config(noreplace) %attr(0600,root,root) %{_sysconfdir}/security/pam_okta.toml
 
 %files selinux
 %{_datadir}/selinux/packages/%{modulename}.pp.bz2

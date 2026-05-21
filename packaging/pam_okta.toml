@@ -1,0 +1,21 @@
+# pam_okta configuration file
+#
+# This file must be owned by root with no group or other permissions
+# (i.e. u=rw,g=,o=).
+#
+# See pam_okta(8) for details on the available configuration keys.
+
+# Okta tenant hostname (required), e.g. "example.oktapreview.com"
+host = ""
+
+# OAuth2 client ID (required)
+client_id = ""
+
+# OAuth2 client secret (required)
+client_secret = ""
+
+# URI of the proxy to use for requests, e.g. "http://proxy.example.com:3128"
+#http_proxy = ""
+
+# Enable increased log verbosity
+#debug = false

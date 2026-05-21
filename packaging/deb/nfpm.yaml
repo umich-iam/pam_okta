@@ -12,3 +12,10 @@ contents:
     dst: /usr/lib/x86_64-linux-gnu/security/pam_okta.so
   - src: ./doc/pam_okta.8
     dst: /usr/share/man/man8/pam_okta.8
+  - src: ./packaging/pam_okta.toml
+    dst: /etc/security/pam_okta.toml
+    type: config|noreplace
+    file_info:
+      mode: 0600
+      owner: root
+      group: root
