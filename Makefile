@@ -12,6 +12,7 @@ exec_prefix = ${prefix}
 libdir = ${exec_prefix}/lib
 mandir = ${datarootdir}/man
 prefix = /usr/local
+sysconfdir = /etc
 
 .MAKE: all
 
@@ -38,6 +39,8 @@ install:
 	$(INSTALL) -m 0755 -d $(DESTDIR)$(datarootdir)/selinux/packages
 	$(INSTALL) -m 0644 target/pam/pam_okta.pp $(DESTDIR)$(datarootdir)/selinux/packages
 	bzip2 -9 $(DESTDIR)$(datarootdir)/selinux/packages/pam_okta.pp
+	$(INSTALL) -m 0755 -d $(DESTDIR)$(sysconfdir)/security
+	$(INSTALL) -m 0600 packaging/pam_okta.toml $(DESTDIR)$(sysconfdir)/security/pam_okta.toml
 
 package:
 	cargo package --no-verify
