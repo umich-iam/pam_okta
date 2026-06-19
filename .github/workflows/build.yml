@@ -168,10 +168,15 @@ jobs:
           merge-multiple: true
 
       - name: Release
-        uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8
-        with:
-          draft: true
-          files: |
-            pam_okta*
-            RPMS/*/*
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --verify-tag \
+            --notes "$GITHUB_REF_NAME" \
+            --repo "$GITHUB_REPOSITORY" \
+            --draft \
+            --title "$GITHUB_REF_NAME" \
+            pam_okta* \
+            RPMS/*/* \
             SRPMS/*
