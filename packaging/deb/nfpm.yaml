@@ -1,5 +1,5 @@
 name: "pam_okta"
-arch: "amd64"
+arch: ${DEBIAN_ARCH}
 platform: "linux"
 version: "0.5.0"
 section: "default"
@@ -9,7 +9,8 @@ homepage: "https://github.com/umich-iam/pam_okta"
 license: "MIT"
 contents:
   - src: ./target/release/libpam_okta.so
-    dst: /usr/lib/x86_64-linux-gnu/security/pam_okta.so
+    dst: /usr/lib/${TARGET_TRIPLE}/security/pam_okta.so
+    expand: true
   - src: ./doc/pam_okta.8
     dst: /usr/share/man/man8/pam_okta.8
   - src: ./packaging/pam_okta.toml

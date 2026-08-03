@@ -14,6 +14,8 @@ mandir = ${datarootdir}/man
 prefix = /usr/local
 sysconfdir = /etc
 
+TARGET_TRIPLE := $(shell gcc -dumpmachine)
+
 .MAKE: all
 
 .PHONY: build deb doc install package rpm selinux
@@ -57,6 +59,7 @@ selinux: target/pam/pam_okta.pp
 rpm: package
 	rpmbuild -ta target/package/pam_okta-0.5.0.crate
 
+deb: DEBIAN_ARCH := $(shell dpkg --print-architecture)
 deb: build
 	mkdir -p deb
-	nfpm package -p deb -f packaging/deb/nfpm.yaml -t deb
+	DEBIAN_ARCH="$(DEBIAN_ARCH)" TARGET_TRIPLE="$(TARGET_TRIPLE)" nfpm package -p deb -f packaging/deb/nfpm.yaml -t deb
