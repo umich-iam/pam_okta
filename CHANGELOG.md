@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.0](https://github.com/umich-iam/pam_okta/releases/tag/v0.6.0) - 2026-05-21
+
+### Added
+- Package includes template configuration file
+
+### Changed
+- Upgraded dependencies
+
+### Fixed
+
 ## [0.5.0](https://github.com/umich-iam/pam_okta/releases/tag/v0.5.0) - 2025-03-23
 
 ### Added

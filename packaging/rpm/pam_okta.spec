@@ -12,7 +12,7 @@
 %define _debugsource_template %{nil}
 %endif
 
-%global rawversion 0.5.0
+%global rawversion 0.6.0
 
 Name: pam_okta
 Version: %(v=%{rawversion}; echo ${v/-/\~})
