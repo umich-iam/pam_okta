@@ -24,3 +24,17 @@ if (mfa_pam_okta_login) {
 if (mfa_pam_okta_sshd) {
     allow sshd_t {http_cache_port_t http_port_t}:tcp_socket name_connect;
 }
+
+optional {
+    require { type sshd_session_t; }
+    if (mfa_pam_okta_sshd) {
+        allow sshd_session_t {http_cache_port_t http_port_t}:tcp_socket name_connect;
+    }
+}
+
+optional {
+    require { type sshd_auth_t; }
+    if (mfa_pam_okta_sshd) {
+        allow sshd_auth_t {http_cache_port_t http_port_t}:tcp_socket name_connect;
+    }
+}
