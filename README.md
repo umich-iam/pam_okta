@@ -90,10 +90,33 @@ client_id = "0deadgoffdeADGOffick"
 client_secret = "6zFfFfffzfZFz6zFZFzzFZFZFfZf6Fz6F6ZfZ6f-FFFzZZ6FZ_zZFzFZ6fFzfFFz"
 ```
 
-### Example PAM Configurations
+### Example sshd_config lines
+
+It is required to set the following option in your `/etc/ssh/sshd_config` file
 
 ```
+KbdInteractiveAuthentication yes
+PasswordAuthentication no
+```
+On some older systems, you may need to set
+```
+ChallengeResponseAuthentication yes
+```
+
+### Example PAM Configurations
+
+The line required for Okta will vary depending on your OS, and the full authentication stack you have implemented.
+The pam_okta module will always be called in the auth stack section of your PAM configuration files.
+The simplest addition required is an authentication line for pam_okta.
+```
 auth    required    pam_okta.so
+```
+A sample, very simple auth stack:
+```
+auth        [default=2 ignore=ignore success=ok]         pam_unix.so nullok
+auth        sufficient                                   pam_succeed_if.so quiet user ingroup not2fa
+auth        sufficient                                   pam_okta.so
+auth        required                                     pam_deny.so
 ```
 
 `pam_duo` has a flag to "fail safe" and return `success` when there
@@ -117,6 +140,10 @@ features available in the `Linux-PAM` stack.
 auth    [default=1 ignore=ignore success=ignore]    pam_succeed_if.so quiet user ingroup staff user notingroup bypass
 auth    required                                    pam_okta.so
 ```
+
+For more detailed PAM guidance and examples see your OS Vendor's PAM documentation. The following link is also useful for putting together PAM configuration files
+
+[PAM Tutorial](https://wpollock.com/AUnix2/PAM-Help.htm)
 
 ## Deployment As Primary Authentication
 
