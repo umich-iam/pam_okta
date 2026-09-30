@@ -166,7 +166,9 @@ impl OktaHandle<'_> {
             if resp_json["error"].as_str().unwrap_or_default() != "authorization_pending" {
                 self.send_error(&format!(
                     "Polling failed: {}",
-                    resp_json["error_description"].as_str().unwrap_or_default()
+                    resp_json["error_description"]
+                        .as_str()
+                        .unwrap_or_else(|| resp_json["error"].as_str().unwrap_or_default())
                 ));
                 return Err(PamError::AUTH_ERR);
             }
