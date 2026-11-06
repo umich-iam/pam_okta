@@ -1,4 +1,4 @@
-name: "pam_okta"
+name: "pam-okta"
 arch: "amd64"
 platform: "linux"
 version: "0.6.0"
@@ -7,6 +7,10 @@ maintainer: "Ezekiel Hendrickson <ezekielh@devnull.mail.umich.edu>"
 description: PAM module for Okta
 homepage: "https://github.com/umich-iam/pam_okta"
 license: "MIT"
+conflicts: [pam_okta]
+deb:
+  breaks: [pam_okta]
+replaces: [pam_okta]
 contents:
   - src: ./target/release/libpam_okta.so
     dst: /usr/lib/x86_64-linux-gnu/security/pam_okta.so
