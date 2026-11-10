@@ -4,6 +4,7 @@
 // This file is part of pam_okta and is distributed under the terms of
 // the MIT license.
 
+use std::collections::HashMap;
 use std::fs::File;
 use std::io::Read;
 use std::os::unix::fs::{MetadataExt, PermissionsExt};
@@ -32,6 +33,9 @@ struct OktaConfig {
     http_proxy: String,
     #[serde(default)]
     debug: bool,
+    #[serde(default)]
+    #[zeroize(skip)]
+    user_map: HashMap<String, String>,
 }
 
 struct OktaHandle<'a> {
@@ -329,7 +333,7 @@ impl OktaHandle<'_> {
 
 impl PamServiceModule for PamOkta {
     fn authenticate(pamh: Pam, _: PamFlags, args: Vec<String>) -> PamError {
-        let username = match pamh.get_user(None) {
+        let mut username = match pamh.get_user(None) {
             Ok(Some(user)) => user.to_str().unwrap_or_default(),
             Ok(None) => return PamError::SERVICE_ERR,
             Err(e) => return e,
@@ -343,6 +347,7 @@ impl PamServiceModule for PamOkta {
                 client_secret: String::new(),
                 http_proxy: String::new(),
                 debug: false,
+                user_map: HashMap::new(),
             },
             agent: ureq_config_base().build().into(),
             mfa_token: None,
@@ -414,6 +419,12 @@ impl PamServiceModule for PamOkta {
             return PamError::SERVICE_ERR;
         }
         oh.configure_agent();
+
+        let user_map = oh.conf.user_map.clone();
+        if let Some(mapped_user) = user_map.get(username) {
+            oh.log_info(&format!("Mapped {username} to {mapped_user}"));
+            username = mapped_user.as_str();
+        }
 
         if password_auth {
             if try_first_pass || use_first_pass {

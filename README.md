@@ -88,6 +88,9 @@ permits authentication with a single factor.
 host = "example.oktapreview.com"
 client_id = "0deadgoffdeADGOffick"
 client_secret = "6zFfFfffzfZFz6zFZFzzFZFZFfZf6Fz6F6ZfZ6f-FFFzZZ6FZ_zZFzFZ6fFzfFFz"
+
+[user_map]
+"u.niqname0" = "uniqname"
 ```
 
 ### Example sshd_config lines
