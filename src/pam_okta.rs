@@ -32,6 +32,8 @@ struct OktaConfig {
     http_proxy: String,
     #[serde(default)]
     debug: bool,
+    #[serde(default)]
+    modern_sshd: bool,
 }
 
 struct OktaHandle<'a> {
@@ -73,16 +75,17 @@ impl OktaHandle<'_> {
     }
 
     fn send_important_info(&self, msg: &str) -> Result<(), PamError> {
-        // Unfortunately, OpenSSH authentication doesn't display non-prompt
+        // Unfortunately, OpenSSH prior to 10.3 doesn't display non-prompt
         // messages as it goes so we have to display a useless prompt.
-        if self
-            .pamh
-            .get_service()
-            .unwrap_or_default()
-            .unwrap_or_default()
-            .to_str()
-            .unwrap_or_default()
-            == "sshd"
+        if !self.conf.modern_sshd
+            && self
+                .pamh
+                .get_service()
+                .unwrap_or_default()
+                .unwrap_or_default()
+                .to_str()
+                .unwrap_or_default()
+                == "sshd"
         {
             self.pamh.conv(
                 Some(&format!("{msg}\nPress enter to continue: ")),
@@ -343,6 +346,7 @@ impl PamServiceModule for PamOkta {
                 client_secret: String::new(),
                 http_proxy: String::new(),
                 debug: false,
+                modern_sshd: false,
             },
             agent: ureq_config_base().build().into(),
             mfa_token: None,

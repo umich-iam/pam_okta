@@ -68,6 +68,10 @@ The configuration file needs to be owned by root (uid: 0) with group and other p
 
 > Boolean flag to enable increased log verbosity.
 
+**modern\_sshd**
+
+> Boolean flag to indicate that you are running OpenSSH 10.3 or greater and no behavioral workarounds are required.
+
 **http\_proxy**
 
 > URI of the proxy to use for requests.
