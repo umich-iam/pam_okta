@@ -178,14 +178,13 @@ authentication.
 ### Poor Handling of Informational Messages
 
 There are two known issues with the integration between OpenSSH and
-PAM.
+PAM, both of which are fixed in OpenSSH 10.3. There's no way to
+automatically detect whether you're running a fixed version, so you
+should manually set `modern_sshd = true` in the `pam_okta` config file
+if you are.
 
 Firstly, non-prompt messages are buffered and shown after authentication
 completes instead of being displayed to the user immediately.
-
-There have been several attempts to fix this behaviour since it was
-reported in [2018](https://bugzilla.mindrot.org/show_bug.cgi?id=2876),
-but none of them have been accepted yet.
 
 Consequently if we have a message—like a number challenge—that
 absolutely must be displayed to the user, `pam_okta` detects that
